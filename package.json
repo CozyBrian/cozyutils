@@ -3,7 +3,8 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "dev": "bun run src/index.ts"
+    "dev": "bun run src/index.ts",
+    "build": "bun build ./src/index.ts --compile --outfile bin/cozyutils"
   },
   "devDependencies": {
     "@types/bun": "latest"
