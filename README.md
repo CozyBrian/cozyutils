@@ -17,7 +17,7 @@ Before setting up the project, ensure you have the following installed:
 1. Clone the repo
 1. Run "bun install"
 1. Run "bun run build"
-1. Copy the contents of the bin directory to (honestly idk, I've just exported my to path)
+1. Copy the contents of the bin directory to (honestly idk, I've just exported mine to path)
 
 ## Usage
 
