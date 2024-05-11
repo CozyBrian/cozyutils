@@ -1,33 +1,30 @@
-import { readdir } from "node:fs/promises";
+import { help, usage } from "./constants";
+import { svgtoexport } from "./svgtoexport";
+import { svgtotsx } from "./svgtotsx";
 
-const DIRECTORY = process.argv[2] || ".";
-const OUTPUT_FILE = process.argv[3] || "index.ts";
+const command = process.argv[2] || "";
 
-let files = await readdir(DIRECTORY);
+async function main() {
+  if (command.startsWith("-")) {
+    switch (command) {
+      case "-svg2tsx":
+        return await svgtotsx();
+      case "-svg2export":
+        return await svgtoexport();
+      case "-help":
+        console.write(help);
+        break
+      case "-h":
+        console.write(help);
+        break
+      default:
+        console.write("Invalid command\n");
+        console.write(usage);
+      }
+  } else {
+    console.write(usage);
+    return 0;
+  }
+}
 
-files = files.filter((file) => {
-  return file.includes(".svg") || file.includes(".png");
-});
-files.sort()
-
-const componentNames = files.map((file) => {
-  const [filename] = file.split(".");
-  const fileSections = filename.split("-");
-  return fileSections
-    .map((section) => {
-      return section.charAt(0).toUpperCase() + section.slice(1);
-    })
-    .join("");
-});
-
-let output = "";
-
-files.forEach((file, i) => {
-  const line = `export { default as ${componentNames[i]} } from "./${file}";\n`;
-  output += line; 
-});
-
-const path = `${DIRECTORY}/${OUTPUT_FILE}`;
-await Bun.write(path, output);
-
-Bun.$`echo "Done!"`;
+main();

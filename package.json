@@ -1,10 +1,12 @@
 {
-  "name": "createicon",
-  "module": "index.ts",
+  "name": "cozyutils",
+  "module": "src/index.ts",
   "type": "module",
+  "version": "0.1.0",
   "scripts": {
     "dev": "bun run src/index.ts",
-    "build": "bun build ./src/index.ts --compile --outfile bin/cozyutils"
+    "build": "bun build ./src/index.ts --compile --outfile bin/cozyutils",
+    "build:js": "bun build --target=bun src/index.ts --outdir=dist"
   },
   "devDependencies": {
     "@types/bun": "latest"
