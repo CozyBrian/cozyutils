@@ -26,7 +26,7 @@ Before setting up the project, ensure you have the following installed:
 CozyUtils provides a command-line interface with the following commands:
 
 - `-svgtotsx <directory>`: Convert SVG files in a directory to React components.
-- `-svgtoexport <directory> <output_file>`: Export SVG files in a directory as named exports.
+- `-i gtoexport <directory> <output_file>`: Export Image files in a directory as named exports.
 
 #### Example
 

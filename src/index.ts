@@ -1,5 +1,5 @@
 import { help, usage } from "./constants";
-import { svgtoexport } from "./svgtoexport";
+import { anytoexport } from "./anytoexport";
 import { svgtotsx } from "./svgtotsx";
 
 const command = process.argv[2] || "";
@@ -9,8 +9,8 @@ async function main() {
     switch (command) {
       case "-svg2tsx":
         return await svgtotsx();
-      case "-svg2export":
-        return await svgtoexport();
+      case "-img2export":
+        return await anytoexport([".svg", ".jpg", ".jpeg", ".png", ".gif", ".webp"]);
       case "-help":
         console.write(help);
         break

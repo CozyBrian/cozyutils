@@ -1,10 +1,10 @@
 import { makeComponentName, readdirAndSort } from "./utils";
 
-export async function svgtoexport() {
+export async function anytoexport(extensions: string[]) {
   const DIRECTORY = process.argv[3] || ".";
   const OUTPUT_FILE = process.argv[4] || "index.ts";
 
-  let files = await readdirAndSort(DIRECTORY, [".svg"]);
+  let files = await readdirAndSort(DIRECTORY, extensions);
 
   const componentNames = files.map((file) => {
     const [filename] = file.split(".");
