@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "bun run src/index.ts",
     "build": "bun build ./src/index.ts --compile --outfile bin/cozyutils",
+    "build:mac": "bun build ./src/index.ts --compile --outfile ~/.cozyutils/bin/cozyutils && bun run build.ts",
     "build:js": "bun build --target=bun src/index.ts --outdir=dist"
   },
   "devDependencies": {
