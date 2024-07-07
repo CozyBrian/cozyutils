@@ -15,6 +15,8 @@ fs.readFile(shellConfigPath, 'utf8', (err, data) => {
                 if (err) console.error(`Error appending to file: ${err}`);
             });
             console.log('Added cozyutils to PATH');
+        } else {
+            console.log('cozyutils already in PATH');
         }
     }
 });

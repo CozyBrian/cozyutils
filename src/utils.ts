@@ -22,3 +22,15 @@ export function makeComponentName(filename: string): string {
     })
     .join("");
 }
+
+export function componentTemplate(componentName: string, content: string) {
+  return `import React from "react";
+  
+function ${componentName}(props: JSX.IntrinsicElements["svg"]) {
+  return (
+    ${content}
+  );
+}
+
+export default ${componentName};`;
+}

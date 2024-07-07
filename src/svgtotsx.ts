@@ -1,4 +1,4 @@
-import { makeComponentName, readdirAndSort } from "./utils";
+import { componentTemplate, makeComponentName, readdirAndSort } from "./utils";
 
 export async function svgtotsx() {
   const DIRECTORY = process.argv[3] || ".";
@@ -23,20 +23,17 @@ export async function svgtotsx() {
     content = content.replace(/stroke="(\w+)"/g, 'stroke="currentColor"');
     content = content.replace('xmlns="http://www.w3.org/2000/svg"', 'xmlns="http://www.w3.org/2000/svg" {...props}');
 
-    const ComponentContent = 
-`import React from "react";
-  
-function ${componentName}(props: JSX.IntrinsicElements["svg"]) {
-  return (
-    ${content}
-  );
-}
-
-export default ${componentName};`;
+    const ComponentContent = componentTemplate(componentName, content);
 
     const path = `${DIRECTORY}/${componentName}.tsx`;
+  
+    const fileExists = await Bun.file(path).exists();
+    if (fileExists) {
+      console.write(`File ${componentName}.tsx already exists. Skipping...\n`);
+      continue;
+    }
+    
     await Bun.write(path, ComponentContent);
   }
   console.write("Done!");
 }
-
