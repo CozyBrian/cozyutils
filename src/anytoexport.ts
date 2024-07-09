@@ -14,7 +14,10 @@ export async function anytoexport(extensions: string[]) {
   let output = "";
 
   files.forEach((file, i) => {
-    const line = `export { default as ${componentNames[i]} } from "./${file}";\n`;
+    let line = `export { default as ${componentNames[i]} } from "./${file}";\n`;
+    if (output.includes(componentNames[i])) {
+      line = `export { default as ${componentNames[i]}Icon } from "./${file}";\n`;
+    }
     output += line; 
   });
 

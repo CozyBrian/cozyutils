@@ -10,7 +10,7 @@ async function main() {
       case "-svg2tsx":
         return await svgtotsx();
       case "-img2export":
-        return await anytoexport([".svg", ".jpg", ".jpeg", ".png", ".gif", ".webp"]);
+        return await anytoexport([".svg", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".tsx"]);
       case "-help":
         console.write(help);
         break
