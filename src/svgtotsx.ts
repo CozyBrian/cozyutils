@@ -49,5 +49,5 @@ export async function svgtotsx() {
   }
 
   await anytoexport(['.tsx'])
-  console.write("Done!");
+  console.write("svgtotsx - Done!\n");
 }

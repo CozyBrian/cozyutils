@@ -23,5 +23,5 @@ export async function anytoexport(extensions: string[]) {
 
   const path = `${DIRECTORY}/${OUTPUT_FILE}`;
   await Bun.write(path, output);
-  console.write("Done!");
+  console.write("anytoexport - Done! \n");
 }
