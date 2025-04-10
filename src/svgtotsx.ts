@@ -1,4 +1,6 @@
+import { anytoexport } from "./anytoexport";
 import { componentTemplate, makeComponentName, readdirAndSort } from "./utils";
+import { mkdir, rename } from "node:fs/promises";
 
 export async function svgtotsx() {
   const DIRECTORY = process.argv[3] || ".";
@@ -34,6 +36,18 @@ export async function svgtotsx() {
     }
     
     await Bun.write(path, ComponentContent);
+    
+    // Move the original SVG file to a new location
+    const newSvgPath = `${DIRECTORY}/original/${filename}`;
+    const oldSvgPath = `${DIRECTORY}/${filename}`;
+    
+    // Create the 'original' directory if it doesn't exist
+    await mkdir(`${DIRECTORY}/original`, { recursive: true });
+    
+    // Move file
+    await rename(oldSvgPath, newSvgPath);
   }
+
+  await anytoexport(['.tsx'])
   console.write("Done!");
 }
