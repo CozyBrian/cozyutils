@@ -21,7 +21,20 @@ const BASE_REF_FALLBACKS = [
   "dev",
 ];
 
+const CLIPBOARD_COMMANDS: Array<{ cmd: string[]; label: string }> = [
+  { cmd: ["pbcopy"], label: "pbcopy" },
+  { cmd: ["wl-copy"], label: "wl-copy" },
+  { cmd: ["xclip", "-selection", "clipboard"], label: "xclip" },
+  { cmd: ["xsel", "--clipboard", "--input"], label: "xsel" },
+  { cmd: ["clip"], label: "clip" },
+];
+
+function logRun(command: string): void {
+  console.write(`Running '${command}'\n`);
+}
+
 async function runGitCommand(args: string[], label: string): Promise<string> {
+  logRun(`git ${args.join(" ")}`);
   const process = Bun.spawn({
     cmd: ["git", ...args],
     stdout: "pipe",
@@ -85,6 +98,7 @@ async function generateGeminiText(
   model: string,
   prompt: string
 ): Promise<string> {
+  logRun(`Generating (${model})`);
   const url = new URL(
     `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent`
   );
@@ -126,15 +140,44 @@ async function generateGeminiText(
   return text;
 }
 
+async function copyToClipboard(text: string): Promise<string> {
+  for (const command of CLIPBOARD_COMMANDS) {
+    try {
+      const process = Bun.spawn({
+        cmd: command.cmd,
+        stdin: "pipe",
+        stdout: "ignore",
+        stderr: "ignore",
+      });
+
+      await process.stdin.write(text);
+      await process.stdin.end();
+      const exitCode = await process.exited;
+      if (exitCode === 0) {
+        return command.label;
+      }
+    } catch {
+      // Ignore and try next clipboard option.
+    }
+  }
+
+  throw new Error(
+    "No clipboard command available. Install pbcopy, wl-copy, xclip, or xsel."
+  );
+}
+
 export async function prMessage(args: string[]): Promise<void> {
   const { positional, options } = parseArgs(args);
   const baseRef = String(options.base ?? positional[0] ?? DEFAULT_BASE_REF);
   const outputPath = options.out ? String(options.out) : "";
   const model = String(options.model ?? DEFAULT_MODEL);
+  const clipboardOnly = options["clipboard-only"] === true;
+  const clipboard =
+    clipboardOnly || options.clipboard === true || options.copy === true;
 
   if (options.help === true) {
     console.write(
-      "Usage: -prmsg [--base=origin/dev] [--out=path] [--model=gemini-1.5-pro]\n"
+      "Usage: -prmsg [--base=origin/dev] [--out=path] [--model=gemini-3-flash-preview] [--clipboard] [--clipboard-only]\n"
     );
     return;
   }
@@ -200,11 +243,32 @@ export async function prMessage(args: string[]): Promise<void> {
     return;
   }
 
-  if (outputPath) {
+  if (outputPath && !clipboardOnly) {
     await Bun.write(outputPath, `${prMessageText}\n`);
     console.write(`prMessage - Done! Wrote ${outputPath}\n`);
+    if (clipboard) {
+      try {
+        const clipboardCommand = await copyToClipboard(prMessageText);
+        console.write(`prMessage - Copied to clipboard (${clipboardCommand})\n`);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        console.write(`${message}\n`);
+      }
+    }
     return;
   }
 
-  console.write(`${prMessageText}\n`);
+  if (!clipboardOnly) {
+    console.write(`${prMessageText}\n`);
+  }
+
+  if (clipboard) {
+    try {
+      const clipboardCommand = await copyToClipboard(prMessageText);
+      console.write(`prMessage - Copied to clipboard (${clipboardCommand})\n`);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : String(error);
+      console.write(`${message}\n`);
+    }
+  }
 }
