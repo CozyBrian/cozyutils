@@ -1,30 +1,29 @@
-import { help, usage } from "./constants";
-import { anytoexport } from "./anytoexport";
-import { svgtotsx } from "./svgtotsx";
+import { commands } from "./cli/commands";
+import { help, usage } from "./cli/usage";
 
-const command = process.argv[2] || "";
+async function main(): Promise<void> {
+  const [commandFlag, ...args] = process.argv.slice(2);
+  const command = commandFlag || "";
 
-async function main() {
-  if (command.startsWith("-")) {
-    switch (command) {
-      case "-svg2tsx":
-        return await svgtotsx();
-      case "-img2export":
-        return await anytoexport([".svg", ".jpg", ".jpeg", ".png", ".gif", ".webp", ".tsx"]);
-      case "-help":
-        console.write(help);
-        break
-      case "-h":
-        console.write(help);
-        break
-      default:
-        console.write("Invalid command\n");
-        console.write(usage);
-      }
-  } else {
+  if (!command.startsWith("-")) {
     console.write(usage);
-    return 0;
+    return;
   }
+
+  if (command === "-help" || command === "-h" || command === "--help") {
+    console.write(help);
+    return;
+  }
+
+  const commandConfig = commands.find((entry) => entry.flag === command);
+
+  if (!commandConfig) {
+    console.write("Invalid command\n");
+    console.write(usage);
+    return;
+  }
+
+  await commandConfig.run(args);
 }
 
 main();
