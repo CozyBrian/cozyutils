@@ -36,4 +36,5 @@ Flags by command:
     --clipboard-only     Only copy to clipboard (skip stdout/file)
   Global
     --help, -h          Show help
+    --version, -v       Show version
 `;
