@@ -19,6 +19,12 @@ Flags by command:
     --dry-run           Print planned changes only
     --force             Overwrite existing output files
     --no-move           Keep original SVGs in place
+  -cmsg
+    --out=path           Output commit message to a file
+    --model=gemini-3-flash-preview Override Gemini model name
+    --clipboard          Copy commit message to clipboard
+    --clipboard-only     Only copy to clipboard (skip stdout/file)
+    --commit             Run git commit with generated message
   -img2export
     --ext=.svg,.png     Override extensions to include
     --dry-run           Print planned changes only
